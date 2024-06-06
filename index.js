@@ -292,14 +292,14 @@ function createPanZoom(domElement, options) {
     };
   }
 
-  function moveTo(x, y) {
+  function moveTo(x, y, isTriggerEvent = true) {
     transform.x = x;
     transform.y = y;
 
     keepTransformInsideBounds();
 
-    triggerEvent('pan');
-    makeDirty();
+    if (isTriggerEvent) triggerEvent('pan');
+    makeDirty(isTriggerEvent);
   }
 
   function moveBy(dx, dy) {
@@ -386,12 +386,12 @@ function createPanZoom(domElement, options) {
     };
   }
 
-  function makeDirty() {
+  function makeDirty(isTriggerEvent = true) {
     isDirty = true;
-    frameAnimation = window.requestAnimationFrame(frame);
+    frameAnimation = window.requestAnimationFrame(() => frame(isTriggerEvent));
   }
 
-  function zoomByRatio(clientX, clientY, ratio) {
+  function zoomByRatio(clientX, clientY, ratio, isTriggerEvent = true) {
     if (isNaN(clientX) || isNaN(clientY) || isNaN(ratio)) {
       throw new Error('zoom requires valid numbers');
     }
@@ -423,14 +423,14 @@ function createPanZoom(domElement, options) {
       if (!transformAdjusted) transform.scale *= ratio;
     }
 
-    triggerEvent('zoom');
+    if (isTriggerEvent) triggerEvent('zoom');
 
-    makeDirty();
+    makeDirty(isTriggerEvent);
   }
 
-  function zoomAbs(clientX, clientY, zoomLevel) {
+  function zoomAbs(clientX, clientY, zoomLevel, isTriggerEvent = true) {
     var ratio = zoomLevel / transform.scale;
-    zoomByRatio(clientX, clientY, ratio);
+    zoomByRatio(clientX, clientY, ratio, isTriggerEvent);
   }
 
   function centerOn(ui) {
@@ -519,17 +519,17 @@ function createPanZoom(domElement, options) {
     triggerPanEnd();
   }
 
-  function frame() {
-    if (isDirty) applyTransform();
+  function frame(isTriggerEvent = true) {
+    if (isDirty) applyTransform(isTriggerEvent);
   }
 
-  function applyTransform() {
+  function applyTransform(isTriggerEvent = true) {
     isDirty = false;
 
     // TODO: Should I allow to cancel this?
     panController.applyTransform(transform);
 
-    triggerEvent('transform');
+    if (isTriggerEvent) triggerEvent('transform');
     frameAnimation = 0;
   }
 
