@@ -19,7 +19,7 @@ declare module "panzoom" {
 
   export interface PanZoomController {
     getOwner: () => Element;
-    applyTransform: (transform: Transform) => void;
+    applyTransform: (transform: Transform, isTriggerEvent?: boolean) => void;
   }
 
   export interface PanZoomOptions {
@@ -56,11 +56,11 @@ declare module "panzoom" {
   export interface PanZoom {
     dispose: () => void;
     moveBy: (dx: number, dy: number, smooth: boolean) => void;
-    moveTo: (x: number, y: number) => void;
+    moveTo: (x: number, y: number, isTriggerEvent?: boolean) => void;
     smoothMoveTo: (x: number, y: number) => void;
     centerOn: (ui: any) => void;
     zoomTo: (clientX: number, clientY: number, scaleMultiplier: number) => void;
-    zoomAbs: (clientX: number, clientY: number, zoomLevel: number) => void;
+    zoomAbs: (clientX: number, clientY: number, zoomLevel: number, isTriggerEvent?: boolean) => void;
     smoothZoom: (
       clientX: number,
       clientY: number,
